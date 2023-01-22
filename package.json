@@ -1,0 +1,95 @@
+{
+  "name": "vscode-ios-remote-build",
+  "displayName": "iOS Remote Build",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:ios-remote-build.initialize",
+    "workspaceContains:.vscode/.ios-remote-build"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ios-remote-build.editRemoteHost",
+        "title": "iOS Remote Build: Edit Remote Server Host"
+      },
+      {
+        "command": "ios-remote-build.editRemotePort",
+        "title": "iOS Remote Build: Edit Remote Server Port"
+      },
+      {
+        "command": "ios-remote-build.connectRemote",
+        "title": "iOS Remote Build: Connect to Remote Host"
+      },
+      {
+        "command": "ios-remote-build.disconnectRemote",
+        "title": "iOS Remote Build: Disconnect from Remote Host"
+      },
+      {
+        "command": "ios-remote-build.startBuild",
+        "title": "iOS Remote Build: Start iOS Build on Remote Host"
+      },
+      {
+        "command": "ios-remote-build.showCommands",
+        "title": "iOS Remote Build: Show Command List"
+      },
+      {
+        "command": "ios-remote-build.initialize",
+        "title": "iOS Remote Build: Activate for Workspace"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "iOS Remote Build",
+        "properties": {
+          "ios-remote-build.remoteHost": {
+            "type": "string",
+            "title": "Remote Mac Host/IP",
+            "description": "The remote host of the Mac build machine"
+          },
+          "ios-remote-build.remotePort": {
+            "type": "number",
+            "title": "Remote Mac Build Port",
+            "default": 6969,
+            "description": "The remote host of the Mac build machine"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "rimraf ./out && tsc -p ./",
+    "watch": "rimraf ./out && tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/tar-fs": "^2.0.1",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.28.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.1.0",
+    "rimraf": "^4.1.1",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "@gerhobbelt/gitignore-parser": "^0.2.0-9",
+    "fs-extra": "^11.1.0",
+    "socket.io-client": "^4.5.4",
+    "tar-fs": "^2.1.1"
+  }
+}
