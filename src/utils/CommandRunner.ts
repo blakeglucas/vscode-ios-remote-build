@@ -33,15 +33,15 @@ export async function commandRunner(
     });
     proc.on('error', (err) => {
       if (options?.onError) {
-        options.onError(err)
+        options.onError(err);
       }
-      reject(err)
-    })
+      reject(err);
+    });
     proc.on('close', (code) => {
       if (options?.onClose) {
-        options.onClose(code)
+        options.onClose(code);
       }
-      resolve(code)
-    })
+      resolve(code);
+    });
   });
 }

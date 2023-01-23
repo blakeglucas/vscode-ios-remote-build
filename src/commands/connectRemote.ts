@@ -5,7 +5,7 @@ import { editRemoteHost } from '../commands/editRemoteHost';
 import { getLogger } from '../logger';
 
 export async function connectRemote() {
-  const logger = getLogger()
+  const logger = getLogger();
   let host: string | undefined = getGlobalConfig('remoteHost');
   while (!host) {
     host = await editRemoteHost();

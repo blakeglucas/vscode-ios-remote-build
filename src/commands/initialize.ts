@@ -15,7 +15,11 @@ export async function initialize() {
     if (!(await fsx.exists(configFilePath))) {
       await fs.writeFile(
         configFilePath,
-        JSON.stringify({ provisioningProfile: '', exportOptionsPlist: '', devTeamId: '', })
+        JSON.stringify({
+          provisioningProfile: '',
+          exportOptionsPlist: '',
+          devTeamId: '',
+        })
       );
     }
     initFolderConfig();

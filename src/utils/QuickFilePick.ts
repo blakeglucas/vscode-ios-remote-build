@@ -12,7 +12,11 @@ export async function showQuickFilePick() {
   let currentPath = rootFolder.uri.fsPath;
   while (true) {
     let dirContents = await fs.readdir(currentPath);
-    const selection = await vscode.window.showQuickPick(['.', '..', ...dirContents]);
+    const selection = await vscode.window.showQuickPick([
+      '.',
+      '..',
+      ...dirContents,
+    ]);
     if (!selection) {
       break;
     }

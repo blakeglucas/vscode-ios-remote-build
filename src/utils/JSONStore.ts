@@ -16,7 +16,7 @@ export class JSONStore {
   }
 
   get(key: string) {
-    return this.fileContent[key]
+    return this.fileContent[key];
   }
 
   async set(key: string, value: any) {

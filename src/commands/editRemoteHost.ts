@@ -3,7 +3,7 @@ import { getLogger } from '../logger';
 import { getGlobalConfig, updateGlobalConfig } from '../config';
 
 export async function editRemoteHost() {
-  const logger = getLogger()
+  const logger = getLogger();
   const currentHost = getGlobalConfig('remoteHost');
   const hostInput = await window.showInputBox({
     title: 'iOS Remote Build Host',

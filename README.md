@@ -12,12 +12,12 @@ TODO
 
 This extension contributes the following settings:
 
-* `ios-remote-build.remoteHost`: Remote Host running the iOS Remote Build Server application
-* `ios-remote-build.remotePort`: Remote Port of the iOS Remote Build server
+- `ios-remote-build.remoteHost`: Remote Host running the iOS Remote Build Server application
+- `ios-remote-build.remotePort`: Remote Port of the iOS Remote Build server
 
 ## Known Issues
 
-* Fickle initial connection sometimes
+- Fickle initial connection sometimes
 
 ## Release Notes
 
