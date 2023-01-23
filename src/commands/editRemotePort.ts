@@ -1,9 +1,10 @@
 import { window } from 'vscode';
-import { logger } from '../logger';
-import { getConfig, updateConfig } from '../config';
+import { getLogger } from '../logger';
+import { getGlobalConfig, updateGlobalConfig } from '../config';
 
 export async function editRemotePort() {
-  const port = getConfig('remotePort');
+  const logger = getLogger()
+  const port = getGlobalConfig('remotePort');
   const portInput = await window.showInputBox({
     title: 'iOS Remote Build Port',
     value: port as string,
@@ -14,6 +15,6 @@ export async function editRemotePort() {
     },
   });
   logger.info('New port input: ' + portInput);
-  updateConfig('remotePort', Number(portInput));
+  updateGlobalConfig('remotePort', Number(portInput));
   return Number(portInput);
 }

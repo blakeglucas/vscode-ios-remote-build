@@ -1,9 +1,10 @@
 import { window } from 'vscode';
-import { logger } from '../logger';
-import { getConfig, updateConfig } from '../config';
+import { getLogger } from '../logger';
+import { getGlobalConfig, updateGlobalConfig } from '../config';
 
 export async function editRemoteHost() {
-  const currentHost = getConfig('remoteHost');
+  const logger = getLogger()
+  const currentHost = getGlobalConfig('remoteHost');
   const hostInput = await window.showInputBox({
     title: 'iOS Remote Build Host',
     value: currentHost as string,
@@ -18,7 +19,7 @@ export async function editRemoteHost() {
   });
   logger.info('New host input: ' + hostInput);
   if (hostInput) {
-    updateConfig('remoteHost', hostInput);
+    updateGlobalConfig('remoteHost', hostInput);
   }
   return hostInput || currentHost;
 }

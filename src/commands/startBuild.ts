@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as socketHandler from '../socketHandler';
-import { getConfig } from '../config';
-import { logger } from '../logger';
+import { getFolderConfig, getGlobalConfig } from '../config';
+import { getLogger } from '../logger';
 import * as fs from 'fs/promises';
 import fsx from 'fs-extra';
 import * as path from 'path';
@@ -11,6 +11,7 @@ import { pack } from 'tar-fs';
 import { Writable } from 'stream';
 
 export async function startBuild() {
+  const logger = getLogger();
   if (!vscode.workspace.workspaceFolders) {
     vscode.window.showErrorMessage('No active workspace folders, cannot build');
     return;
@@ -19,7 +20,12 @@ export async function startBuild() {
     vscode.window.showErrorMessage('Not connected to the remote host.');
     return;
   }
-  const immuneParsers: any[] = [ignoreParser.compile('!*.mobileprovision')];
+  if (!getFolderConfig('devTeamId')) {
+    vscode.window.showErrorMessage(
+      'Apple Development Team ID not set, build will fail'
+    );
+    return;
+  }
   const ignoreParsers: any[] = [ignoreParser.compile('.git')];
   const currentFolder = vscode.workspace.workspaceFolders[0];
   if (await fsx.exists(path.join(currentFolder.uri.fsPath, '.gitignore'))) {
@@ -50,12 +56,6 @@ export async function startBuild() {
         .split(path.sep)
         .join(path.posix.sep);
       if (
-        immuneParsers.map((parser) => parser.accepts(relName)).filter((x) => x)
-          .length > 0
-      ) {
-        return false;
-      }
-      if (
         ignoreParsers.map((parser) => parser.denies(relName)).filter((x) => x)
           .length > 0
       ) {
@@ -70,5 +70,30 @@ export async function startBuild() {
   });
 
   const data = Buffer.concat(chunks);
-  socketHandler.sendStartBuffer(data);
+
+  const ppp = getFolderConfig('provisioningProfile');
+  let ppFileContent: Buffer | undefined = undefined;
+  if (!ppp) {
+    vscode.window.showWarningMessage(
+      'No provisioning profile selected, this may affect build success'
+    );
+  } else {
+    ppFileContent = await fs.readFile(ppp);
+  }
+
+  if (!getFolderConfig('exportOptionsPlist')) {
+    logger.info(
+      'Export Options Plist not set, will attempt to construct one from provisioning profile'
+    );
+  }
+
+  const eopPath = getFolderConfig('exportOptionsPlist');
+  let eopFileContent: Buffer | undefined;
+  if (eopPath) {
+    eopFileContent = await fs.readFile(eopPath);
+  }
+
+  const devTeamId = getFolderConfig('devTeamId');
+
+  socketHandler.startBuild(data, devTeamId, eopFileContent, ppFileContent);
 }

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { logger } from './logger';
+import { getLogger, initLogger } from './logger';
 import * as socketHandler from './socketHandler';
 
 import { editRemotePort } from './commands/editRemotePort';
@@ -9,8 +9,17 @@ import { showCommands } from './commands/showCommands';
 import { startBuild } from './commands/startBuild';
 import { disconnectRemote } from './commands/disconnectRemote';
 import { initialize } from './commands/initialize';
+import { selectExportPlist } from './commands/selectExportPlist';
+import { selectProvisioningProfile } from './commands/selectProvisioningProfile';
+import { initFolderConfig } from './config';
+import { initStatusItem } from './statusItemHandler';
+import { setDevTeamId } from './commands/setDevTeamId';
+import { installIPA } from './commands/installIPA';
 
 export function activate(context: vscode.ExtensionContext) {
+  initLogger(context);
+  initFolderConfig();
+  initStatusItem(context);
   // Register commands
   context.subscriptions.push(
     vscode.commands.registerCommand('ios-remote-build.initialize', initialize),
@@ -30,7 +39,20 @@ export function activate(context: vscode.ExtensionContext) {
       'ios-remote-build.disconnectRemote',
       disconnectRemote
     ),
-    vscode.commands.registerCommand('ios-remote-build.startBuild', startBuild)
+    vscode.commands.registerCommand('ios-remote-build.startBuild', startBuild),
+    vscode.commands.registerCommand(
+      'ios-remote-build.setDevTeamId',
+      setDevTeamId
+    ),
+    vscode.commands.registerCommand(
+      'ios-remote-build.selectProvisioningProfile',
+      selectProvisioningProfile
+    ),
+    vscode.commands.registerCommand(
+      'ios-remote-build.selectExportPlist',
+      selectExportPlist
+    ),
+    vscode.commands.registerCommand('ios-remote-build.installIPA', installIPA)
   );
 
   context.subscriptions.push(
@@ -41,14 +63,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   // Initialize Status Bar
-  const statusBarItem = vscode.window.createStatusBarItem(1);
-  statusBarItem.text = 'iOS Remote';
-  statusBarItem.command = 'ios-remote-build.showCommands';
-  statusBarItem.show();
-  context.subscriptions.push(statusBarItem);
 }
 
 export function deactivate() {
-  logger.dispose();
   socketHandler.disconnectSocket();
 }

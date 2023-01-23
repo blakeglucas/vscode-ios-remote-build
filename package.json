@@ -11,7 +11,7 @@
   ],
   "activationEvents": [
     "onCommand:ios-remote-build.initialize",
-    "workspaceContains:.vscode/.ios-remote-build"
+    "workspaceContains:.vscode/ios-remote-build.json"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -29,12 +29,28 @@
         "title": "iOS Remote Build: Connect to Remote Host"
       },
       {
+        "command": "ios-remote-build.startBuild",
+        "title": "iOS Remote Build: Start iOS Build on Remote Host"
+      },
+      {
+        "command": "ios-remote-build.installIPA",
+        "title": "iOS Remote Build: Install IPA file onto Apple Device"
+      },
+      {
         "command": "ios-remote-build.disconnectRemote",
         "title": "iOS Remote Build: Disconnect from Remote Host"
       },
       {
-        "command": "ios-remote-build.startBuild",
-        "title": "iOS Remote Build: Start iOS Build on Remote Host"
+        "command": "ios-remote-build.setDevTeamId",
+        "title": "iOS Remote Build: Set Development Team ID"
+      },
+      {
+        "command": "ios-remote-build.selectProvisioningProfile",
+        "title": "iOS Remote Build: Select Provisioning Profile"
+      },
+      {
+        "command": "ios-remote-build.selectExportPlist",
+        "title": "iOS Remote Build: Select Export Options Plist"
       },
       {
         "command": "ios-remote-build.showCommands",
@@ -59,6 +75,35 @@
             "title": "Remote Mac Build Port",
             "default": 6969,
             "description": "The remote host of the Mac build machine"
+          },
+          "ios-remote-build.provisioningProfile": {
+            "type": "string",
+            "title": "Provisioning Profile File"
+          },
+          "ios-remote-build.exportOptionsPlist": {
+            "type": "string",
+            "title": "Export Options Plist File"
+          },
+          "ios-remote-build.loggingLevel": {
+            "type": "string",
+            "enum": [
+              "off",
+              "fatal",
+              "error",
+              "warn",
+              "info",
+              "debug",
+              "trace"
+            ],
+            "default": "debug",
+            "description": "The verbosity of logging. The Order is off < fatal < error < warn < info < debug < trace.",
+            "scope": "window"
+          },
+          "ios-remote-build.sourceLocationTracking": {
+            "type": "boolean",
+            "default": false,
+            "description": "Should Source Code Location Info be added to log entries, DANGER - May be very slow, only use in debugging scenarios",
+            "scope": "window"
           }
         }
       }
@@ -88,6 +133,7 @@
   },
   "dependencies": {
     "@gerhobbelt/gitignore-parser": "^0.2.0-9",
+    "@vscode-logging/wrapper": "^1.0.2",
     "fs-extra": "^11.1.0",
     "socket.io-client": "^4.5.4",
     "tar-fs": "^2.1.1"

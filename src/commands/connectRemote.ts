@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
 import * as socketHandler from '../socketHandler';
-import { getConfig } from '../config';
+import { getGlobalConfig } from '../config';
 import { editRemoteHost } from '../commands/editRemoteHost';
-import { logger } from '../logger';
+import { getLogger } from '../logger';
 
 export async function connectRemote() {
-  let host: string | undefined = getConfig('remoteHost');
+  const logger = getLogger()
+  let host: string | undefined = getGlobalConfig('remoteHost');
   while (!host) {
     host = await editRemoteHost();
   }

@@ -1,8 +1,9 @@
-import { logger } from '../logger';
+import { getLogger } from '../logger';
 import * as vscode from 'vscode';
 import path from 'path';
 
 export async function showCommands() {
+  const logger = getLogger()
   const meta = require(path.resolve(__dirname, '../..', 'package.json'));
   const selection = await vscode.window.showQuickPick(
     meta.contributes.commands.slice(0, -2).map((x: vscode.Command) => x.title)
