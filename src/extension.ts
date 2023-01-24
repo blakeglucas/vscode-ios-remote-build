@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { getLogger, initLogger } from './logger';
-import * as socketHandler from './socketHandler';
+import { initLogger } from './logger';
+import * as socketHandler from './socket';
 
 import { editRemotePort } from './commands/editRemotePort';
 import { editRemoteHost } from './commands/editRemoteHost';
@@ -12,14 +12,19 @@ import { initialize } from './commands/initialize';
 import { selectExportPlist } from './commands/selectExportPlist';
 import { selectProvisioningProfile } from './commands/selectProvisioningProfile';
 import { initFolderConfig } from './config';
-import { initStatusItem } from './statusItemHandler';
+import { initStatusItem } from './handlers/statusItemHandler';
 import { setDevTeamId } from './commands/setDevTeamId';
 import { installIPA } from './commands/installIPA';
+import { runRemoteBuild } from './commands/runRemoteBuild';
+import { createWorkspace } from './commands/createWorkspace';
+import { attachWorkspace } from './commands/attachWorkspace';
+import { detachWorkspace } from './commands/detachWorkspace';
 
 export function activate(context: vscode.ExtensionContext) {
   initLogger(context);
   initFolderConfig();
   initStatusItem(context);
+
   // Register commands
   context.subscriptions.push(
     vscode.commands.registerCommand('ios-remote-build.initialize', initialize),
@@ -52,7 +57,30 @@ export function activate(context: vscode.ExtensionContext) {
       'ios-remote-build.selectExportPlist',
       selectExportPlist
     ),
-    vscode.commands.registerCommand('ios-remote-build.installIPA', installIPA)
+    vscode.commands.registerCommand('ios-remote-build.installIPA', installIPA),
+    vscode.commands.registerCommand(
+      'ios-remote-build.runRemoteBuild',
+      runRemoteBuild
+    ),
+    vscode.commands.registerCommand('ios-remote-build.stopRemoteRun', () => {
+      socketHandler.buildHandler?.stopRun();
+    }),
+    vscode.commands.registerCommand(
+      'ios-remote-build.createActiveWorkspaceNew',
+      () => createWorkspace(true)
+    ),
+    vscode.commands.registerCommand(
+      'ios-remote-build.createActiveWorkspaceExisting',
+      () => createWorkspace(false)
+    ),
+    vscode.commands.registerCommand(
+      'ios-remote-build.attachActiveWorkspace',
+      attachWorkspace
+    ),
+    vscode.commands.registerCommand(
+      'ios-remote-build.detachActiveWorkspace',
+      detachWorkspace
+    )
   );
 
   context.subscriptions.push(
@@ -61,8 +89,6 @@ export function activate(context: vscode.ExtensionContext) {
       showCommands
     )
   );
-
-  // Initialize Status Bar
 }
 
 export function deactivate() {

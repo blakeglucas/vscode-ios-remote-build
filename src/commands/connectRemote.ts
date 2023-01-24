@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as socketHandler from '../socketHandler';
+import * as socketHandler from '../socket';
 import { getGlobalConfig } from '../config';
 import { editRemoteHost } from '../commands/editRemoteHost';
 import { getLogger } from '../logger';

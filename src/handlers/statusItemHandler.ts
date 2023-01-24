@@ -23,3 +23,15 @@ export function showConnected() {
     statusBarItem.text = `$(check) ${baseText}`;
   }
 }
+
+export function showWorkspaceConnected(name: string) {
+  if (statusBarItem) {
+    statusBarItem.text += ` : ${name}`;
+  }
+}
+
+export function showNormalStatusItem() {
+  if (statusBarItem) {
+    statusBarItem.text = statusBarItem.text.split(' : ')[0];
+  }
+}

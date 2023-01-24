@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as socketHandler from '../socketHandler';
+import * as socketHandler from '../socket';
 import { getFolderConfig, getGlobalConfig } from '../config';
 import { getLogger } from '../logger';
 import * as fs from 'fs/promises';
@@ -93,7 +93,12 @@ export async function startBuild() {
     eopFileContent = await fs.readFile(eopPath);
   }
 
-  const devTeamId = getFolderConfig('devTeamId');
+  const developmentTeamId = getFolderConfig('devTeamId');
 
-  socketHandler.startBuild(data, devTeamId, eopFileContent, ppFileContent);
+  socketHandler.buildHandler!.startBuild({
+    files: data,
+    developmentTeamId,
+    provisioningProfile: ppFileContent,
+    exportOptionsPlist: eopFileContent,
+  });
 }
