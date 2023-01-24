@@ -18,6 +18,12 @@ export function showDisconnected() {
   }
 }
 
+export function showConnecting() {
+  if (statusBarItem) {
+    statusBarItem.text = `$(loading~spin) ${baseText}`;
+  }
+}
+
 export function showConnected() {
   if (statusBarItem) {
     statusBarItem.text = `$(check) ${baseText}`;

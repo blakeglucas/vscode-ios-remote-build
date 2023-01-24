@@ -5,8 +5,7 @@ import { getLogger } from '../logger';
 import * as fs from 'fs/promises';
 import fsx from 'fs-extra';
 import * as path from 'path';
-//@ts-ignore
-import ignoreParser from '@gerhobbelt/gitignore-parser';
+import ignore from 'ignore';
 import { pack } from 'tar-fs';
 import { Writable } from 'stream';
 
@@ -26,21 +25,19 @@ export async function startBuild() {
     );
     return;
   }
-  const ignoreParsers: any[] = [ignoreParser.compile('.git')];
+  const ignoreRules = ignore().add('.git/');
   const currentFolder = vscode.workspace.workspaceFolders[0];
   if (await fsx.exists(path.join(currentFolder.uri.fsPath, '.gitignore'))) {
     const ignoreContent = await fs.readFile(
       path.join(currentFolder.uri.fsPath, '.gitignore')
     );
-    const gitignore = ignoreParser.compile(ignoreContent.toString());
-    ignoreParsers.push(gitignore);
+    ignoreRules.add(ignoreContent.toString());
   }
   if (await fsx.exists(path.join(currentFolder.uri.fsPath, '.vscodeignore'))) {
     const ignoreContent = await fs.readFile(
       path.join(currentFolder.uri.fsPath, '.vscodeignore')
     );
-    const vscodeignore = ignoreParser.compile(ignoreContent.toString());
-    ignoreParsers.push(vscodeignore);
+    ignoreRules.add(ignoreContent.toString());
   }
   const chunks: Buffer[] = [];
   const ws = new Writable({
@@ -55,13 +52,7 @@ export async function startBuild() {
         .relative(currentFolder.uri.fsPath, name)
         .split(path.sep)
         .join(path.posix.sep);
-      if (
-        ignoreParsers.map((parser) => parser.denies(relName)).filter((x) => x)
-          .length > 0
-      ) {
-        return true;
-      }
-      return false;
+      return ignoreRules.ignores(relName);
     },
   }).pipe(ws);
 

@@ -29,15 +29,14 @@ export class SocketBuildHandler implements vscode.Disposable {
   }: BuildPayload) {
     const logger = getLogger();
     logger.info('Starting build...');
-    this.socket.emit(
-      'build/start',
+    this.socket.emit('build/start', {
       files,
       developmentTeamId,
       exportOptionsPlist,
       provisioningProfile,
       provisioningSpecifier,
-      release
-    );
+      release,
+    });
   }
 
   async onBuildFinish(iosTar?: Buffer) {
